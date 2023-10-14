@@ -1,5 +1,6 @@
 package ao.com.franciscolourenco.todolist.task;
 
+import ao.com.franciscolourenco.todolist.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,23 @@ public class TaskController {
         UUID idUser = UUID.fromString(request.getAttribute("idUser").toString());
         List<TaskModel> tasks = this.taskRepository.findByIdUser(idUser);
         return tasks;
+    }
+
+    @PutMapping("/{id}")
+    public TaskModel update(@RequestBody TaskModel taskModel,
+                       @PathVariable UUID id,
+                       HttpServletRequest request){
+
+        var task = this.taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found"));
+
+
+        Utils.copyNonNullProperties(taskModel, task);
+        UUID idUser = UUID.fromString(request.getAttribute("idUser").toString());
+        task.setIdUser(idUser);
+
+        return this.taskRepository.save(task);
+
     }
 
 }

@@ -27,7 +27,7 @@ public class FilterTaskAuth extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String rota = request.getServletPath();
-        if(rota.equalsIgnoreCase("/tasks/")){
+        if(rota.startsWith("/tasks/")){
             String authorization = request.getHeader("Authorization");
             String authEncoded = authorization.substring("Basic".length()).trim();
             byte[] authDecoded = Base64.getDecoder().decode(authEncoded);
@@ -53,7 +53,6 @@ public class FilterTaskAuth extends OncePerRequestFilter {
         }else{
             filterChain.doFilter(request,response);
         }
-
-
     }
+
 }
