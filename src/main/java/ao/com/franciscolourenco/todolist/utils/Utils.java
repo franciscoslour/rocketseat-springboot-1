@@ -6,12 +6,12 @@ import org.springframework.beans.BeanWrapperImpl;
 
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Utils {
 
+    private Utils(){
+
+    }
     public static void copyNonNullProperties(Object source, Object target) {
         BeanUtils.copyProperties(source, target, getNullPropertyNames(source));
     }
@@ -22,12 +22,11 @@ public class Utils {
 
         PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
-        Set<String> propertiesNull = Arrays.stream(pds)
-                .filter(propertie -> src.getPropertyValue(propertie.getName()) == null)
+        return Arrays.stream(pds)
                 .map(PropertyDescriptor::getName)
-                .collect(Collectors.toSet());
-
-        return propertiesNull.toArray(new String[propertiesNull.size()]);
+                .filter(name -> src.getPropertyValue(name) == null)
+                .distinct()
+                .toArray(String[]::new);
 
     }
 
